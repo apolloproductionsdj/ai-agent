@@ -1,7 +1,9 @@
 import { Doc, Id } from '@/convex/_generated/dataModel';
 import { useNavigation } from '@/lib/NavigationProvider';
 import { useQuery } from 'convex/react';
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import { Button } from './ui/button';
+import { TrashIcon } from '@radix-ui/react-icons';
 
 export default function ChatRow({
   chat,
@@ -10,7 +12,7 @@ export default function ChatRow({
   chat: Doc<'chats'>;
   onDelete: (id: Id<'chats'>) => void;
 }) {
-  //   const router = useRouter();
+  const router = useRouter();
   const { closeMobileNav } = useNavigation();
 
   const handleClick = () => {
@@ -24,7 +26,20 @@ export default function ChatRow({
       onClick={handleClick}
     >
       <div className='p-4'>
-        <div className='flex justify-between items-start'>Chat</div>
+        <div className='flex justify-between items-start'>
+          Chat
+          <Button
+            variant='ghost'
+            size='icon'
+            className='opacity-0 group-hover:opacity-100 -mr-2 -mt-2 ml-2 transition-opacity duration-200'
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(chat._id);
+            }}
+          >
+            <TrashIcon className='h-4 w-4 text-gray-400 hover:text-red-500 transition-colors' />
+          </Button>
+        </div>
         {/* {lastMessage && (
           <p className="text-xs text-gray-400 mt-1.5 font-medium">
             <TimeAgo date={lastMessage.createdAt} />
