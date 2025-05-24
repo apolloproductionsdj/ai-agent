@@ -166,7 +166,7 @@ function addCachingHeaders(messages: BaseMessage[]): BaseMessage[] {
 }
 
 export async function submitQuestion(messages: BaseMessage[], chatId: string) {
-  // Add caching headers to messages
+  // Add caching headers to messagess
   const cachedMessages = addCachingHeaders(messages);
   // console.log("🔒🔒🔒 Messages:", cachedMessages);
 
