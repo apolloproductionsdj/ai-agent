@@ -28,6 +28,8 @@ export async function POST(req: Request) {
       return new Response('Unauthorized', { status: 401 });
     }
 
+    const body = (await req.json()) as ChatRequestBody;
+
     const { messages, newMessage, chatId } = (await req.json()) as ChatRequestBody;
     const convex = getConvexClient();
 
@@ -43,6 +45,33 @@ export async function POST(req: Request) {
         'X-Accel-Buffering': 'no', // Disable buffering for nginx which is required for SSE to work properly
       },
     });
+
+    const startStream = async () => {
+      try {
+        // Send initial connection established message
+        await sendSSEMessage(writer, { type: StreamMessageType.Connected });
+        // Send user Message to Convex
+        await convex.mutation(api.messages.send, {
+          chatId,
+          content: newMessage,
+        });
+
+        // Convert messages to LangChain format
+        const langChainMessages = [
+          ...messages.map((msg) =>
+            msg.role === 'user' ? new HumanMessage(msg.content) : new AIMessage(msg.content)
+          ),
+          new HumanMessage(newMessage),
+        ];
+      } catch (error) {
+        console.error('Error in chat API:', error);
+        return NextResponse.json({ error: 'Failed to process chat request' } as const, {
+          status: 500,
+        });
+      }
+    };
+
+    startStream();
 
     // Handle the streaming response
     (async () => {

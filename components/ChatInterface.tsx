@@ -5,11 +5,13 @@ import { Doc, Id } from '@/convex/_generated/dataModel';
 import { Button } from '@/components/ui/button';
 import { ChatRequestBody, StreamMessageType } from '@/lib/types';
 // import WelcomeMessage from '@/components/WelcomeMessage';
-// import { createSSEParser } from '@/lib/SSEParser';
+import { createSSEParser } from '@/lib/createSSEParser';
 // import { MessageBubble } from '@/components/MessageBubble';
 import { ArrowRight } from 'lucide-react';
 import { getConvexClient } from '@/lib/convex';
 import { api } from '@/convex/_generated/api';
+import { MessageBubble } from './MessageBubble';
+import WelcomeMessage from './WelcomeMessage';
 
 interface ChatInterfaceProps {
   chatId: Id<'chats'>;
